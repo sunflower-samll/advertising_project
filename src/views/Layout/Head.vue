@@ -30,7 +30,7 @@ export default {};
 
 <style scoped>
 .head {
-  height: 50px;
+  height: 6%;
   width: 100%;
   background-color: #147ce4;
   display: flex;

@@ -14,6 +14,6 @@
 <style scoped>
 .RightMin{
     flex: 1;
-    background-color: pink;
+    height: 94%;
 }
 </style>

@@ -47,7 +47,7 @@ const routes=[
         children:[
             {
                 path:'/advertising',
-                component:()=>import('@/views/Advertising.vue')
+                component:()=>import('@/views/advertising/Advertising.vue')
             },
         ]
     },

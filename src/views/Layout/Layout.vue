@@ -29,11 +29,15 @@ export default {
 </script>
 
 <style scoped>
+.Layout{
+  height: 100%;
+}
 .LayoutBody{
+  height: 94%;
   display: flex;
 }
 .middle{
   width: 20px;
-  background-color: #ccc;
+  background-color: rgb(235, 231, 231);
 }
 </style>

@@ -49,6 +49,6 @@
 <style scoped>
     .nav{
         flex: 0 0 150px;
-        background-color: aqua;
+        height: 94%;
     }
 </style>
