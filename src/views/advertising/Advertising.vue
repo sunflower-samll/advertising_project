@@ -8,27 +8,27 @@
           添加应用
           <span>(4)</span>
         </span>
-        <el-button type="primary" @click="dialogVisible = true">主要按钮</el-button>
+        <el-button type="primary" @click="openDialog()">添加应用</el-button>
 
-        <el-dialog title="添加应用" :visible.sync="dialogVisible" width="30%">
+        <el-dialog v-bind:title="isAdd?'添加应用':'编辑应用'" :visible.sync="dialogVisible" width="30%">
           <p class="appName">
             <span style="color:red">*</span>
             <span>应用名称</span>
-            <input type="text" />
+            <input type="text" v-model="appEcho.title" />
           </p>
           <p class="platform">
             <span style="color:red">*</span>
             <span>平台</span>
             <select>
               <option>Android</option>
-              <option value>iOS</option>
+              <option>iOS</option>
             </select>
           </p>
           <div>
             <el-radio v-model="radio" label="1">应用已发布</el-radio>
             <p class="appURl">
               <span>应用商店URL</span>
-              <input type="text" />
+              <input type="text" v-bind:disabled="radio!=1" />
             </p>
           </div>
           <div>
@@ -36,7 +36,7 @@
             <p class="package">
               <span style="color:red">*</span>
               <span>包名</span>
-              <input type="text" />
+              <input type="text" v-bind:disabled="radio!=2" />
             </p>
           </div>
           <span slot="footer" class="dialog-footer">
@@ -54,7 +54,7 @@
           v-for="(item,index) in navLists"
           :key="index"
           :class="{blue:changeBlue==index}"
-          @click="blues(index)"
+          @click="clickNews(item,index)"
         >
           <img :src="item.img" alt />
           <div class="news">
@@ -70,49 +70,15 @@
         <div class="head-left">
           <div class="edit-box">
             <el-breadcrumb separator="|">
-              <el-breadcrumb-item :to="{ path: '|' }">新闻一</el-breadcrumb-item>
+              <el-breadcrumb-item :to="{ path: '|' }">{{appData.title}}</el-breadcrumb-item>
               <el-breadcrumb-item>
-                <a href="/">Android</a>
+                <a href="/">{{appData.text}}</a>
               </el-breadcrumb-item>
               <el-breadcrumb-item>免费</el-breadcrumb-item>
             </el-breadcrumb>
 
             <span class="edit">
-              <el-button type="text" @click="centerDialogVisible = true">编辑</el-button>
-              <el-dialog title="编辑应用" :visible.sync="centerDialogVisible" width="30%" center>
-                <p class="appName">
-                  <span style="color:red">*</span>
-                  <span>应用名称</span>
-                  <input type="text" />
-                </p>
-                <p class="platform">
-                  <span style="color:red">*</span>
-                  <span>平台</span>
-                  <select>
-                    <option>Android</option>
-                    <option value>iOS</option>
-                  </select>
-                </p>
-                <div>
-                  <el-radio v-model="radio" label="1">应用已发布</el-radio>
-                  <p class="appURl">
-                    <span>应用商店URL</span>
-                    <input type="text" />
-                  </p>
-                </div>
-                <div>
-                  <el-radio v-model="radio" label="2">备选项</el-radio>
-                  <p class="package">
-                    <span style="color:red">*</span>
-                    <span>包名</span>
-                    <input type="text" />
-                  </p>
-                </div>
-                <span slot="footer" class="dialog-footer">
-                  <el-button @click="centerDialogVisible = false">取 消</el-button>
-                  <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>
-                </span>
-              </el-dialog>
+              <el-button type="text" @click="openDialog(appData)">编辑</el-button>
             </span>
 
             <span class="delete">
@@ -121,23 +87,22 @@
           </div>
           <p class="idbox">
             <span>应用ID:</span>
-            <span>14545454545755754545</span>
+            <span>{{appData.appuid}}</span>
           </p>
         </div>
 
         <div class="head-right">
           <div>
-            <el-button type="primary" @click="outerVisible = true">添加广告位</el-button>
+            <el-button type="primary" @click="openAdvertisingSpaceDialog()">添加广告位</el-button>
 
-            <el-dialog title="添加广告位" :visible.sync="outerVisible">
+            <el-dialog v-bind:title="isAdd?'添加广告位':'编辑广告位'" :visible.sync="outerVisible">
               <el-dialog width="30%" title="内层 Dialog" :visible.sync="innerVisible" append-to-body></el-dialog>
               <p class="setting">基础设置</p>
               <p class="typeBox">
                 <span style="color:red">*</span>
                 <span>广告类型</span>
                 <select name id>
-                  <option value>Android</option>
-                  <option value>iOS</option>
+                  <option v-for="item in advertisingTypeEnum" :key="item.id">{{item}}</option>
                 </select>
               </p>
               <p class="nameBox">
@@ -155,15 +120,28 @@
       </div>
 
       <div class="right-main">
-        <el-table :data="tableData" style="width: 100%">
+        <el-table :data="advertiesingDatas.data.adseat_list" style="width: 100%">
           <el-table-column type="expand">
-            <el-table :data="tableData2" border style="width: 100%">
-              <el-table-column prop="adverNetwork" label="广告网络" width="200"></el-table-column>
-              <el-table-column prop="adverName" label="广告源名称" width="380"></el-table-column>
-              <el-table-column prop="adverMessg" label="广告位信息" width="380"></el-table-column>
-              <el-table-column prop="adverState" label="授权状态" width="150">
-                <i class="el-icon-success" style="color:#0bbd46"></i>
-                <span>已授权</span>
+            <el-table
+              :data="advertiesingChildDatas.data.adsource_placement_data"
+              border
+              style="width: 100%"
+            >
+              <el-table-column prop="adsource_cn_name" label="广告网络" width="200"></el-table-column>
+              <el-table-column prop="instance_name" label="广告源名称" width="380"></el-table-column>
+              <el-table-column prop="placement" label="广告位信息" width="380">
+                <template slot-scope="scope">
+                  <p v-for="item in scope.row.placement" :key="item.id">
+                    <span>{{item.label}}:</span>
+                    <span>{{item.value}}</span>
+                  </p>
+                </template>
+              </el-table-column>
+              <el-table-column prop="is_pass" label="授权状态" width="150">
+                <template slot-scope="scope">
+                  <i v-if="scope.row.is_pass===1" class="el-icon-success" style="color:#0bbd46">已授权</i>
+                  <i v-else class="el-icon-error" style="color:red">未授权</i>
+                </template>
               </el-table-column>
               <el-table-column prop="adverOperation" label="操作">
                 <!-- 删除 -->
@@ -171,7 +149,11 @@
                   <i class="el-icon-delete"></i>
                 </el-button>
                 <!-- 编辑 -->
-                <el-button type="text" @click="dialogTableVisible = true" style="margin-left:10px;margin-right:20px">
+                <el-button
+                  type="text"
+                  @click="ed = true"
+                  style="margin-left:10px;margin-right:20px"
+                >
                   <i class="el-icon-edit"></i>
                 </el-button>
 
@@ -188,25 +170,41 @@
             </el-table>
           </el-table-column>
 
-          <el-table-column label="广告位" prop="adverId" width="300">
-            <p>开屏广告</p>
-            <p>
-              <span>ID:</span>
-              <span>11245412454</span>
-            </p>
+          <el-table-column label="广告位" prop="seat_name" width="350">
+            <template slot-scope="scope">
+              <p>{{scope.row.seat_name}}</p>
+              <p>
+                <span>ID:</span>
+                <span>{{scope.row.aduuid}}</span>
+              </p>
+            </template>
           </el-table-column>
-          <el-table-column label="广告类型" prop="adverName" width="180"></el-table-column>
-          <el-table-column label="广告缓存数" prop="adverNumber" width="180"></el-table-column>
-          <el-table-column label="第三方广告源" prop="adverType" width="180"></el-table-column>
+          <el-table-column label="广告类型" prop="ad_type" width="180">
+            <template slot-scope="scope">
+              <p>{{advertisingTypeEnum[scope.row.ad_type]}}</p>
+            </template>
+          </el-table-column>
+          <el-table-column label="广告缓存数" prop="cache_num" width="180"></el-table-column>
+          <el-table-column label="第三方广告源" prop="adsource_placement_num" width="180">
+            <template slot-scope="scope">
+              <p>{{scope.row.adsource_placement_num}}个</p>
+            </template>
+          </el-table-column>
           <el-table-column label="操作">
-            <el-button type="text" @click="dialogFormVisible = true">添加广告源</el-button>
-            <router-link to="/agent" style="margin-left:10px;color:#409EFF">查看中介</router-link>
-            <el-button type="text" @click="dialogTableVisible = true" style="margin-left:10px">
-              <i class="el-icon-edit"></i>
-            </el-button>
-            <el-button type="text" @click="delet">
-              <i class="el-icon-delete"></i>
-            </el-button>
+            <template slot-scope="scope">
+              <el-button type="text" @click="dialogFormVisible = true">添加广告源</el-button>
+              <router-link to="/agent" style="margin-left:10px;color:#409EFF">查看中介</router-link>
+              <el-button
+                type="text"
+                @click="openAdvertisingSpaceDialog(scope.row.id)"
+                style="margin-left:10px"
+              >
+                <i class="el-icon-edit"></i>
+              </el-button>
+              <el-button type="text" @click="delet">
+                <i class="el-icon-delete"></i>
+              </el-button>
+            </template>
           </el-table-column>
         </el-table>
 
@@ -250,7 +248,7 @@
         </el-dialog>
 
         <!-- 编辑框 -->
-        <el-dialog title="编辑广告位" :visible.sync="dialogTableVisible" width="40%" left>
+        <!-- <el-dialog title="编辑广告位" :visible.sync="dialogTableVisible" width="40%" left>
           <div class="settings" width="100%">
             <p>基础设置</p>
             <div>
@@ -336,7 +334,7 @@
             <el-button @click="dialogTableVisible = false">取 消</el-button>
             <el-button type="primary" @click="dialogTableVisible = false">确 定</el-button>
           </span>
-        </el-dialog>
+        </el-dialog>-->
       </div>
     </div>
   </div>
@@ -359,34 +357,80 @@ export default {
       dialogTableVisible: false,
       changeBlue: 0,
       value: "100", //开关
+      advertisingTypeEnum: [
+        "激励视频",
+        "插屏",
+        "横幅",
+        "原生",
+        "开屏",
+        "积分墙",
+      ],
+      advertiesingDatas: {
+        code: 200,
+        data: {
+          adseat_list: [
+            {
+              id: "6683",
+              seat_name: "开屏广告",
+              aduuid: "A4B50FD1D3F3F9679FCF2392D6ABE72C",
+              ad_type: "1",
+              cache_num: "1",
+              ad_type_template: "1",
+              adsource_placement_num: "2",
+            },
+          ],
+        },
+      },
+      advertiesingChildDatas: {
+        code: 200,
+        data: {
+          adsource_placement_data: [
+            {
+              adsource_placement_id: "8692",
+              adsource_id: "16",
+              placement: [
+                { label: "Media ID", value: "1110635914" },
+                { label: "Unit ID", value: "5051817788834202" },
+              ],
+              is_pass: 0,
+              instance_name: "Tencent_Ads_native_1",
+              is_on: 0,
+              adsource_name: "Tencent Ads",
+              adsource_cn_name: "腾讯广告",
+            },
+            {
+              adsource_placement_id: "8678",
+              adsource_id: "17",
+              placement: [
+                { label: "App ID", value: "5077728" },
+                { label: "Slot ID", value: "945272045" },
+              ],
+              is_pass: 1,
+              instance_name: "Draw视频广告",
+              is_on: 1,
+              adsource_name: "Pangle(cn)",
+              adsource_cn_name: "穿山甲(国内)",
+            },
+          ],
+          company_id: "186",
+        },
+      },
       navLists: [
         {
+          id: 1,
           img:
             "https://api-developer.tradplus.com/Public/assets/images/android.png",
           title: "新闻一",
           text: "Andrid",
+          appuid: "73D76CBBA8C4296C19DF83A714B40DE4",
         },
         {
+          id: 2,
           img:
             "https://api-developer.tradplus.com/Public/assets/images/android.png",
           title: "新闻二",
-          text: "Andrid",
-        },
-      ],
-      tableData: [
-        {
-          adverId: "开屏广告",
-          adverName: "标准原生",
-          adverNumber: "1",
-          adverType: "2个",
-        },
-      ],
-      tableData2: [
-        {
-          adverNetwork: "腾讯广告",
-          adverName: "Tencent——Ads——native",
-          adverMessg: "ID:111111220212",
-          adverState: "已授权",
+          text: "ios",
+          appuid: "4C2F9DA25DB84340B50D764970F4B648",
         },
       ],
       form: {
@@ -397,7 +441,13 @@ export default {
       },
       formLabelWidth: "120px",
       num: 1,
+      appData: {},
+      isAdd: false,
+      appEcho: {},
     };
+  },
+  created: function () {
+    this.appData = this.navLists[0];
   },
   methods: {
     open() {
@@ -419,10 +469,6 @@ export default {
           });
         });
     },
-    blues: function (index) {
-      console.log(index);
-      this.changeBlue = index;
-    },
     delet() {
       this.$confirm("确认删除？删除后可以再恢复", "提示", {
         confirmButtonText: "确定",
@@ -441,6 +487,29 @@ export default {
             message: "已取消删除",
           });
         });
+    },
+    clickNews(item, index) {
+      this.changeBlue = index;
+      this.appData = item;
+      //拿到item.id调用后台请求查询
+      //this.advertiesingDatas = 请求回来的数据
+    },
+    openDialog(item) {
+      if (item == null) {
+        this.isAdd = true;
+      } else {
+        this.isAdd = false;
+        this.appEcho = item;
+      }
+      this.dialogVisible = true;
+    },
+    openAdvertisingSpaceDialog(id) {
+      if (id == null) {
+        this.isAdd = true;
+      } else {
+        this.isAdd = false;
+      }
+      this.outerVisible = true;
     },
   },
 };
