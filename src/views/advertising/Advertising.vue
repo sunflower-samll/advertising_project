@@ -162,15 +162,15 @@
                   >
                     <i class="el-icon-edit"></i>
                   </el-button>
-                <el-tooltip :content="'Switch value: ' + value" placement="top">
-                  <el-switch
-                    v-model="value"
-                    active-color="#13ce66"
-                    inactive-color="#ccc"
-                    active-value="100"
-                    inactive-value="0"
-                  ></el-switch>
-                </el-tooltip>
+                  <el-tooltip :content="'Switch value: ' + value" placement="top">
+                    <el-switch
+                      v-model="scope.row.is_on"
+                      active-color="#13ce66"
+                      inactive-color="#ccc"
+                      :active-value="1"
+                      :inactive-value="0"
+                    ></el-switch>
+                  </el-tooltip>
                 </template>
               </el-table-column>
             </el-table>
@@ -225,31 +225,31 @@
           <div class="addAdverTop">
             <p>
               <span>广告网络</span>
-              <select>
-                <option value>广告一</option>
-                <option value>广告二</option>
-              </select>
+              <el-select v-model="select" @change="selectOne">
+                <el-option
+                  v-for="item in newAdsourceList.data.adsource_list"
+                  :key="item.id"
+                  :label="item.adsource_name"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
             </p>
             <p>
               <span style="color:red">*</span>
               <span>广告源名称</span>
               <input type="text" />
             </p>
-            <p>
+            <p v-show="showPrise" v-for="(valueObject,key) in adsourceTemplate.data.adsource_data.placement_template" :key="key">
               <span style="color:red">*</span>
-              <span>Placement ID</span>
+              <span>{{valueObject.label}}</span>
               <input type="text" />
             </p>
           </div>
-          <div class="addAdverbotm">
+          <div class="addAdverbotm" v-show="showRentPrise">
             <p class>报表 API</p>
-            <p>
-              <span>App ID</span>
-              <input type="text" name id />
-            </p>
-            <p>
-              <span>System User Token</span>
-              <input type="text" name id />
+            <p v-for="(valueObject,key) in adsourceTemplate.data.adsource_data.account_template" :key="key">
+              <span>{{valueObject.label}}</span>
+              <input type="text" :value="valueObject.value"/>
             </p>
           </div>
           <span slot="footer" class="dialog-footer">
@@ -456,6 +456,62 @@ export default {
       appData: {},
       isAdd: false,
       appEcho: {},
+      select:"",
+      newAdsourceList: {
+        code: 200,
+        data: {
+          adsource_list: [
+            { id: 1, adsource_name: "Facebook", adsource_cn_name: null },
+            { id: 2, adsource_name: "Admob", adsource_cn_name: null },
+            {
+              id: 16,
+              adsource_name: "Tencent Ads",
+              adsource_cn_name: "腾讯广告",
+            },
+            {
+              id: 17,
+              adsource_name: "Pangle(cn)",
+              adsource_cn_name: "穿山甲(国内)",
+            },
+            { id: 3, adsource_name: "Mopub", adsource_cn_name: null },
+            { id: 18, adsource_name: "Mintegral", adsource_cn_name: null },
+            {
+              id: 19,
+              adsource_name: "Pangle",
+              adsource_cn_name: "穿山甲(海外)",
+            },
+            {
+              id: 20,
+              adsource_name: "Kuaishou Ads",
+              adsource_cn_name: "快手",
+            },
+          ],
+        },
+      },
+      adsourceTemplate: {
+        code: 200,
+        data: {
+          adsource_data: {
+            url: "https://developer.tradplus.com/Home/Help/view/id/8",
+            name: "Facebook",
+            cn_name: null,
+            account_template: {
+              APP_ID: { label: "App ID", value: "1111" },
+              ACCESS_TOKEN: { label: "System User Token", value: "1111" },
+            },
+            placement_template: {
+              placementId: { label: "Placement ID", only: 1 },
+            },
+            type: "2",
+            help_url_en: "https://doc.tradplus.com/en/Facebook",
+            help_url_cn: "https://doc.tradplus.com/cn/Facebook",
+            instance_name: "",
+            is_pass: 0,
+          },
+        },
+      },
+      showPrise:false,
+			showRentPrise:false,
     };
   },
   created: function () {
@@ -523,13 +579,20 @@ export default {
       }
       this.outerVisible = true;
     },
-     openAddSource(id) {
+    openAddSource(id) {
       if (id == null) {
         this.isAdd = true;
       } else {
         this.isAdd = false;
       }
       this.dialogFormVisible = true;
+    },
+    selectOne(event) {
+      //event 就是value里面的值，我这里存的id，通过id去调用后台接口，然后把数据返回
+      console.log(event);
+      this.showPrise = true;
+      this.showRentPrise = true;
+      //this.adsourceTemplate = 数据;
     },
   },
 };

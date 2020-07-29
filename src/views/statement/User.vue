@@ -17,9 +17,9 @@
 
       <!-- 快新闻 -->
       <div class="all-width">
-        <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form :inline="true" :model="appAll" class="demo-form-inline">
           <el-form-item>
-            <el-select v-model="formInline.region" placeholder="快新闻">
+            <el-select v-model="appAll.region" placeholder="所有应用">
               <el-option label="222" value="one">222</el-option>
               <el-option label="11" value="two">11</el-option>
               <el-option label="快日记" value="three">快日记</el-option>
@@ -31,19 +31,15 @@
 
       <!-- 地区 -->
       <div class="all-width">
-        <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form :inline="true" :model="areaAll" class="demo-form-inline">
           <el-form-item>
-            <el-select v-model="formInline.region" placeholder="阿富汗">
-              <el-input
-                class="app-input"
-                placeholder="请输入内容"
-                prefix-icon="el-icon-search"
-                v-model="input2"
-              ></el-input>
-              <p v-for="item in allCountry" :key="item.id" class="allCountry">
-                <el-checkbox>{{item}}</el-checkbox>
-              </p>
-              <el-option label="区域二" value="beijing" style="display:none"></el-option>
+            <el-select
+              v-model="areaAll.abc"
+              placeholder="所有地区"
+              filterable
+              :filter-method="dataFilter"
+            >
+              <el-option v-for="item in options" :key="item" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -96,7 +92,9 @@
     <div class="user-bottom">
       <div class="el-row-col">
         <el-row>
-          <el-col :span="4"><i class="el-icon-info"></i>日期</el-col>
+          <el-col :span="4">
+            <i class="el-icon-info"></i>日期
+          </el-col>
           <el-col :span="4">
             <i class="el-icon-info"></i>Config DAU
           </el-col>
@@ -112,7 +110,6 @@
           <el-col :span="4">
             <i class="el-icon-info"></i>Impression/DAU
           </el-col>
-          
         </el-row>
       </div>
       <p class="datas">暂无数据</p>
@@ -158,11 +155,15 @@ export default {
       value2: "",
       //   newsList: ["222", "111", "快日记", "快新闻"],
       allCountry: ["中国", "泰国", "巴基斯坦", "韩国"],
-      formInline: {
+      areaAll: {
+        user: "",
+        abc: "",
+      },
+      appAll: {
         user: "",
         region: "",
       },
-      input2:"",
+      input2: "",
       numberOfHits: [
         "Config DAU",
         "DEU",
@@ -172,6 +173,8 @@ export default {
         "展示点击数",
         "展示率",
       ],
+      options:["中国", "泰国", "巴基斯坦", "韩国"],
+      value:"",
     };
   },
   mounted() {
@@ -199,7 +202,6 @@ export default {
           },
         ],
       });
-
       myChart2.setOption({
         tooltip: {},
         xAxis: {
@@ -214,6 +216,22 @@ export default {
           },
         ],
       });
+    },
+    //https://www.cnblogs.com/jin-zhe/p/10402294.html
+    dataFilter(val) {
+      this.value = val;
+      if (val) {
+        this.options = this.allCountry.filter((item) => {
+          if (
+            !!~item.indexOf(val) ||
+            !!~item.toUpperCase().indexOf(val.toUpperCase())
+          ) {
+            return true;
+          }
+        });
+      } else {
+        this.options = this.allCountry;
+      }
     },
   },
 };
@@ -273,8 +291,8 @@ export default {
   text-align: center;
   line-height: 80px;
 }
-.user-bottom{
-    margin-top: 60px;
-    border-bottom: 1px solid #ccc;
+.user-bottom {
+  margin-top: 60px;
+  border-bottom: 1px solid #ccc;
 }
 </style>

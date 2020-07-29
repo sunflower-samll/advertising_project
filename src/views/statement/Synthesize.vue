@@ -19,17 +19,14 @@
       <div class="all-width">
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
           <el-form-item>
-            <el-select v-model="formInline.region" placeholder="应用">
+            <el-select v-model="select1" multiple collapse-tags placeholder="应用">
               <el-input
                 class="app-input"
                 placeholder="请输入内容"
                 prefix-icon="el-icon-search"
                 v-model="input2"
               ></el-input>
-              <p v-for="item in allAppList" :key="item.id" class="allAppList">
-                <el-checkbox>{{item}}</el-checkbox>
-              </p>
-              <el-option label="区域二" value="beijing" style="display:none"></el-option>
+              <el-option v-for="item in allAppList" :key="item" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -39,17 +36,14 @@
       <div class="all-width">
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
           <el-form-item>
-            <el-select v-model="formInline.region" placeholder="广告位">
+            <el-select v-model="select2" multiple collapse-tags placeholder="广告位">
               <el-input
                 class="app-input"
                 placeholder="请输入内容"
                 prefix-icon="el-icon-search"
                 v-model="input2"
               ></el-input>
-              <p v-for="item in allAdverSpace" :key="item.id" class="allAdverSpace">
-                <el-checkbox>{{item}}</el-checkbox>
-              </p>
-              <el-option label="区域二" value="beijing" style="display:none"></el-option>
+              <el-option v-for="item in allAdverSpace" :key="item" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -59,11 +53,8 @@
       <div class="all-width">
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
           <el-form-item>
-            <el-select v-model="formInline.region" placeholder="广告网络">
-              <p v-for="item in allAdverNetwork" :key="item.id" class="allAdverNetwork">
-                <el-checkbox>{{item}}</el-checkbox>
-              </p>
-              <el-option label="区域二" value="beijing" style="display:none"></el-option>
+            <el-select v-model="select3" multiple collapse-tags placeholder="广告网络">
+              <el-option v-for="item in allAdverNetwork" :key="item" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -73,17 +64,14 @@
       <div class="all-width">
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
           <el-form-item>
-            <el-select v-model="formInline.region" placeholder="广告源">
+            <el-select v-model="select4" multiple collapse-tags placeholder="广告源">
               <el-input
                 class="app-input"
                 placeholder="请输入内容"
                 prefix-icon="el-icon-search"
                 v-model="input2"
               ></el-input>
-              <p v-for="item in allAdverSource" :key="item.id" class="allAdverSource">
-                <el-checkbox>{{item}}</el-checkbox>
-              </p>
-              <el-option label="区域二" value="beijing" style="display:none"></el-option>
+              <el-option v-for="item in allAdverSource" :key="item" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -93,17 +81,14 @@
       <div class="all-width">
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
           <el-form-item>
-            <el-select v-model="formInline.region" placeholder="所有国家/地区">
+            <el-select v-model="select5" multiple collapse-tags placeholder="所有国家/地区">
               <el-input
                 class="app-input"
                 placeholder="请输入内容"
                 prefix-icon="el-icon-search"
                 v-model="input2"
               ></el-input>
-              <p v-for="item in allCountry" :key="item.id" class="allCountry">
-                <el-checkbox>{{item}}</el-checkbox>
-              </p>
-              <el-option label="区域二" value="beijing" style="display:none"></el-option>
+              <el-option v-for="item in allCountry" :key="item" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -113,11 +98,8 @@
       <div class="all-width">
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
           <el-form-item>
-            <el-select v-model="formInline.region" placeholder="广告类型">
-              <p v-for="item in allAdverType" :key="item.id" class="allAdverType">
-                <el-checkbox>{{item}}</el-checkbox>
-              </p>
-              <el-option label="区域二" value="beijing" style="display:none"></el-option>
+            <el-select v-model="select6" multiple collapse-tags placeholder="广告类型">
+              <el-option v-for="item in allAdverType" :key="item" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -127,14 +109,8 @@
       <div class="all-width">
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
           <el-form-item>
-            <el-select v-model="formInline.region" placeholder="平台">
-              <p class="allAdverType">
-                <el-checkbox>Android</el-checkbox>
-              </p>
-              <p class="allAdverType">
-                <el-checkbox>iOS</el-checkbox>
-              </p>
-              <el-option label="区域二" value="beijing" style="display:none"></el-option>
+            <el-select v-model="select7" multiple collapse-tags placeholder="平台">
+              <el-option v-for="item in allPlatform" :key="item" :label="item" :value="item"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -530,22 +506,22 @@ export default {
       allAdverSpace: ["开屏广告", "横幅广告", "激励广告", "积分墙广告"],
       allAdverNetwork: [
         "facebook",
-        "facebook",
-        "facebook",
-        "facebook",
-        "facebook",
-        "facebook",
+        "腾讯广告",
+        "穿山甲",
+        "阿里巴巴",
+        "google",
+        "百度",
       ],
       allAdverSource: [
-        "Pangle_open",
-        "Pangle_open",
-        "Pangle_open",
-        "Pangle_open",
-        "Pangle_open",
+        "Pangle(cn)_open",
+        "Tencent_Ads_int_1",
+        "Tencent_Ads_banner_1",
+        "Draw视频广告",
+        "Facebook_native_1",
       ],
       allCountry: ["中国", "泰国", "巴基斯坦", "韩国"],
       allAdverType: ["原生", "插屏", "开屏", "横幅"],
-
+      allPlatform:["Android","iOS"],
       //点击数下拉菜单
       numberOfHits: [
         "预估收入",
@@ -557,6 +533,13 @@ export default {
         "展示率",
       ],
       activeName: "first",
+      select1: [],
+      select2: [],
+      select3: [],
+      select4: [],
+      select5: [],
+      select6: [],
+      select7: [],
     };
   },
   mounted() {
