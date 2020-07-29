@@ -59,12 +59,12 @@
     </div>
 
     <div class="appName">
-      <el-row>
+      <el-row class="elRow">
         <el-col :span="9">
-          <div class="grid-content bg-purple leftTitle">应用名称</div>
+          <div>应用名称</div>
         </el-col>
         <el-col :span="3">
-          <div class="grid-content bg-purple-light">
+          <div>
             <i class="el-icon-info"></i>
             <el-tooltip class="item" effect="dark" content="数据来自第三方网络展示数之和" placement="top">
               <el-button class="elbtn">展示次数</el-button>
@@ -72,7 +72,7 @@
           </div>
         </el-col>
         <el-col :span="3">
-          <div class="grid-content bg-purple">
+          <div >
             <i class="el-icon-info"></i>
             <el-tooltip class="item" effect="dark" content="数据来自第三方网络展示数之和" placement="top">
               <el-button class="elbtn">点击数</el-button>
@@ -80,7 +80,7 @@
           </div>
         </el-col>
         <el-col :span="3">
-          <div class="grid-content bg-purple-light">
+          <div >
             <i class="el-icon-info"></i>
             <el-tooltip class="item" effect="dark" content="数据来自第三方网络展示数之和" placement="top">
               <el-button class="elbtn">点击率</el-button>
@@ -88,7 +88,7 @@
           </div>
         </el-col>
         <el-col :span="3">
-          <div class="grid-content bg-purple">
+          <div >
             <i class="el-icon-info"></i>
             <el-tooltip class="item" effect="dark" content="数据来自第三方网络展示数之和" placement="top">
               <el-button class="elbtn">eCPM</el-button>
@@ -96,7 +96,7 @@
           </div>
         </el-col>
         <el-col :span="3">
-          <div class="grid-content bg-purple-light">
+          <div>
             <i class="el-icon-info"></i>
             <el-tooltip class="item" effect="dark" content="数据来自第三方网络展示数之和" placement="top">
               <el-button class="elbtn">预估收入</el-button>
@@ -314,16 +314,12 @@ export default {
 .appName {
   margin: 0 20px;
 }
-.bg-purple {
-  background: #e5e9f2;
+.elRow{
+  background-color:#e5e9f2 ;
+  height: 40px;
+  line-height: 40px;
 }
-.bg-purple-light {
-  background: #e5e9f2;
-}
-.grid-content {
-  border-radius: 4px;
-  min-height: 36px;
-}
+
 .leftTitle {
   line-height: 30px;
   padding-left: 10px;

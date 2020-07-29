@@ -48,6 +48,7 @@
       <!-- 搜索框 -->
       <el-input placeholder="按应用名搜索" prefix-icon="el-icon-search"></el-input>
 
+      <!-- 新闻导航 -->
       <div class="area">
         <div
           class="news-box"
@@ -66,6 +67,7 @@
     </div>
     <!-- 右边  -->
     <div class="right">
+      <!-- 头部 -->
       <div class="right-head">
         <div class="head-left">
           <div class="edit-box">
@@ -91,6 +93,7 @@
           </p>
         </div>
 
+        <!-- 添加广告位 -->
         <div class="head-right">
           <div>
             <el-button type="primary" @click="openAdvertisingSpaceDialog()">添加广告位</el-button>
@@ -119,8 +122,10 @@
         </div>
       </div>
 
+      <!-- 右边主要信息 -->
       <div class="right-main">
         <el-table :data="advertiesingDatas.data.adseat_list" style="width: 100%">
+          <!-- 广告源表格 -->
           <el-table-column type="expand">
             <el-table
               :data="advertiesingChildDatas.data.adsource_placement_data"
@@ -144,19 +149,19 @@
                 </template>
               </el-table-column>
               <el-table-column prop="adverOperation" label="操作">
-                <!-- 删除 -->
-                <el-button type="text" @click="delet">
-                  <i class="el-icon-delete"></i>
-                </el-button>
-                <!-- 编辑 -->
-                <el-button
-                  type="text"
-                  @click="ed = true"
-                  style="margin-left:10px;margin-right:20px"
-                >
-                  <i class="el-icon-edit"></i>
-                </el-button>
-
+                <template slot-scope="scope">
+                  <!-- 删除 -->
+                  <el-button type="text" @click="delet">
+                    <i class="el-icon-delete"></i>
+                  </el-button>
+                  <!-- 编辑 -->
+                  <el-button
+                    type="text"
+                    @click="openAddSource(scope.row.id)"
+                    style="margin-left:10px;margin-right:20px"
+                  >
+                    <i class="el-icon-edit"></i>
+                  </el-button>
                 <el-tooltip :content="'Switch value: ' + value" placement="top">
                   <el-switch
                     v-model="value"
@@ -166,10 +171,12 @@
                     inactive-value="0"
                   ></el-switch>
                 </el-tooltip>
+                </template>
               </el-table-column>
             </el-table>
           </el-table-column>
 
+          <!-- 表头+广告位 -->
           <el-table-column label="广告位" prop="seat_name" width="350">
             <template slot-scope="scope">
               <p>{{scope.row.seat_name}}</p>
@@ -192,7 +199,7 @@
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button type="text" @click="dialogFormVisible = true">添加广告源</el-button>
+              <el-button type="text" @click="openAddSource(scope.row.id)">添加广告源</el-button>
               <router-link to="/agent" style="margin-left:10px;color:#409EFF">查看中介</router-link>
               <el-button
                 type="text"
@@ -209,7 +216,12 @@
         </el-table>
 
         <!-- 添加广告源弹出框 -->
-        <el-dialog title="添加广告源" :visible.sync="dialogFormVisible" width="30%" center>
+        <el-dialog
+          v-bind:title="isAdd?'编辑广告源':'添加广告源'"
+          :visible.sync="dialogFormVisible"
+          width="30%"
+          center
+        >
           <div class="addAdverTop">
             <p>
               <span>广告网络</span>
@@ -247,7 +259,7 @@
           </span>
         </el-dialog>
 
-        <!-- 编辑框 -->
+        <!-- 广告位编辑框 -->
         <!-- <el-dialog title="编辑广告位" :visible.sync="dialogTableVisible" width="40%" left>
           <div class="settings" width="100%">
             <p>基础设置</p>
@@ -510,6 +522,14 @@ export default {
         this.isAdd = false;
       }
       this.outerVisible = true;
+    },
+     openAddSource(id) {
+      if (id == null) {
+        this.isAdd = true;
+      } else {
+        this.isAdd = false;
+      }
+      this.dialogFormVisible = true;
     },
   },
 };

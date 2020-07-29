@@ -37,7 +37,7 @@ export default {
   display: flex;
 }
 .middle{
-  width: 20px;
+  width: 15px;
   background-color: rgb(235, 231, 231);
 }
 </style>
