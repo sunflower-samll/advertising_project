@@ -1,0 +1,41 @@
+//引入axios和qs
+import axios from 'axios'
+import qs from 'qs'
+// import { resolve, reject } from 'core-js/fn/promise'
+axios.defaults.baseURL="http://106.8.14.34:8082"//服务器地址
+axios.defaults.timeout=5000;//超时
+
+// 发请求出去之前拦截
+axios.interceptors.request.use((config)=>{
+    console.log("请求拦截")
+    return config;
+})
+
+//响应拦截
+axios.interceptors.response.use((response)=>{
+    console.log("响应拦截")
+    return response;
+})
+//通用的get请求和post请求
+export default {
+    get(url, params = {}) {
+        return new Promise((resolve, reject) => {
+            axios.get(url, { params }).then((response) => {
+                resolve(response.data);//成功
+            })
+            .catch((err)=>{
+                reject(err);//失败
+            })
+        })
+    },
+    post(url,params={}) { 
+        return new Promise((resolve,reject)=>{
+            axios.post("url",qs.stringify(params)
+            ).then((response)=>{
+                resolve(response.data)//成功
+            }).catch((err)=>{
+                reject(err)//失败
+            })
+        })
+    },
+}

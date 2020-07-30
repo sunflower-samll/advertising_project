@@ -6,20 +6,21 @@
       <p class="left-p1">
         <span>
           添加应用
-          <span>(4)</span>
+          <span>({{addAppLength}})</span>
         </span>
         <el-button type="primary" @click="openDialog()">添加应用</el-button>
 
+        <!-- 添加应用弹框 -->
         <el-dialog v-bind:title="isAdd?'添加应用':'编辑应用'" :visible.sync="dialogVisible" width="30%">
           <p class="appName">
             <span style="color:red">*</span>
             <span>应用名称</span>
-            <input type="text" v-model="appEcho.title" />
+            <input type="text" v-model="appEcho" />
           </p>
           <p class="platform">
             <span style="color:red">*</span>
             <span>平台</span>
-            <select>
+            <select v-model="optionName">
               <option>Android</option>
               <option>iOS</option>
             </select>
@@ -28,7 +29,7 @@
             <el-radio v-model="radio" label="1">应用已发布</el-radio>
             <p class="appURl">
               <span>应用商店URL</span>
-              <input type="text" v-bind:disabled="radio!=1" />
+              <input type="text" v-model="shopUrl" v-bind:disabled="radio!=1" />
             </p>
           </div>
           <div>
@@ -36,7 +37,7 @@
             <p class="package">
               <span style="color:red">*</span>
               <span>包名</span>
-              <input type="text" v-bind:disabled="radio!=2" />
+              <input type="text" v-model="packageName" v-bind:disabled="radio!=2" />
             </p>
           </div>
           <span slot="footer" class="dialog-footer">
@@ -59,8 +60,8 @@
         >
           <img :src="item.img" alt />
           <div class="news">
-            <p>{{item.title}}</p>
-            <p>{{item.text}}</p>
+            <p>{{item.app_name}}</p>
+            <p>{{item.os}}</p>
           </div>
         </div>
       </div>
@@ -72,9 +73,9 @@
         <div class="head-left">
           <div class="edit-box">
             <el-breadcrumb separator="|">
-              <el-breadcrumb-item :to="{ path: '|' }">{{appData.title}}</el-breadcrumb-item>
+              <el-breadcrumb-item :to="{ path: '|' }">{{appData.app_name}}</el-breadcrumb-item>
               <el-breadcrumb-item>
-                <a href="/">{{appData.text}}</a>
+                <a href="/">{{appData.os}}</a>
               </el-breadcrumb-item>
               <el-breadcrumb-item>免费</el-breadcrumb-item>
             </el-breadcrumb>
@@ -89,7 +90,7 @@
           </div>
           <p class="idbox">
             <span>应用ID:</span>
-            <span>{{appData.appuid}}</span>
+            <span>{{appData._id}}</span>
           </p>
         </div>
 
@@ -354,9 +355,15 @@
 
 <script>
 const Template = ["标准原生", "原生横幅", "Draw信息流"];
+//引入封装好的接口层Ajax函数
+import {getAppList,} from "@/api/appAdver"
 export default {
   data() {
     return {
+      appEcho: '',//添加应用---应用名称
+      optionName:'',//添加应用----平台
+      shopUrl:'',//应用商店url
+      packageName:"",//包名
       checkboxGroup1: ["标准原生"],
       Template: Template,
       dialogVisible: false,
@@ -368,6 +375,7 @@ export default {
       dialogFormVisible: false,
       dialogTableVisible: false,
       changeBlue: 0,
+      addAppLength:0,//头部应用数量
       value: "100", //开关
       advertisingTypeEnum: [
         "激励视频",
@@ -427,24 +435,7 @@ export default {
           company_id: "186",
         },
       },
-      navLists: [
-        {
-          id: 1,
-          img:
-            "https://api-developer.tradplus.com/Public/assets/images/android.png",
-          title: "新闻一",
-          text: "Andrid",
-          appuid: "73D76CBBA8C4296C19DF83A714B40DE4",
-        },
-        {
-          id: 2,
-          img:
-            "https://api-developer.tradplus.com/Public/assets/images/android.png",
-          title: "新闻二",
-          text: "ios",
-          appuid: "4C2F9DA25DB84340B50D764970F4B648",
-        },
-      ],
+      navLists: [],
       form: {
         name: "",
         id: "",
@@ -455,7 +446,7 @@ export default {
       num: 1,
       appData: {},
       isAdd: false,
-      appEcho: {},
+      
       select:"",
       newAdsourceList: {
         code: 200,
@@ -515,7 +506,8 @@ export default {
     };
   },
   created: function () {
-    this.appData = this.navLists[0];
+    this.appListData()
+    // this.appData = this.navLists[0];
   },
   methods: {
     open() {
@@ -559,8 +551,11 @@ export default {
     clickNews(item, index) {
       this.changeBlue = index;
       this.appData = item;
+      // console.log(this.appData.app_name)
+      // console.log(item,index)
       //拿到item.id调用后台请求查询
-      //this.advertiesingDatas = 请求回来的数据
+      // this.advertiesingDatas = 请求后的数据
+      // console.log(this.advertiesingDatas)
     },
     openDialog(item) {
       if (item == null) {
@@ -594,6 +589,25 @@ export default {
       this.showRentPrise = true;
       //this.adsourceTemplate = 数据;
     },
+    // 获取app列表数据
+    async appListData(){
+     let {data}= await getAppList({})
+     this.addAppLength=data.length
+     this.navLists=data
+    //  console.log(this.navLists)
+    },
+
+    //添加应用
+    //  async addAppSend(){
+    //    this.dialogVisible = false
+    //    let {data}= await addApp({
+    //         "appname": this.appEcho,
+    //         "os": this.optionName,
+    //         "pic_url": this.shopUrl,
+    //         "package_name": this.packageName
+    //     })
+    //     console.log(data)
+    //  }
   },
 };
 </script>
