@@ -23,15 +23,17 @@
         </el-form-item>
       </el-form>
       <p class="rememberMe">
-           <el-checkbox v-model="checked">记住我</el-checkbox>
+        <el-checkbox v-model="checked">记住我</el-checkbox>
       </p>
-       <el-button type="primary" class="loginBtn" @click="login">登录</el-button>
+      <el-button type="primary" class="loginBtn" @click="login">登录</el-button>
     </div>
+    <children :email="dynamicValidateForm.email"></children>
   </div>
 </template>
 
 <script>
-import {checkLogin,} from "@/api/account"
+import { checkLogin } from "@/api/account";
+import children from "./Layout/Head"
 export default {
   data() {
     return {
@@ -44,8 +46,11 @@ export default {
         email: "",
       },
       checked: true,
-      password:''
+      password: "",
     };
+  },
+  components:{
+    children,
   },
   methods: {
     submitForm(formName) {
@@ -58,14 +63,18 @@ export default {
         }
       });
     },
-    async login(){
-     let {data}= await checkLogin(
-       JSON.stringify({
-           'email':'this.dynamicValidateForm.email',
-           'password':'this.password'
-       })
-     )
-     console.log(data)
+    async login() {
+      let data = await checkLogin(
+        {
+          "email": this.dynamicValidateForm.email,
+          "password": this.password,
+        }
+      );
+      if(data.data === 'success'){
+        this.$router.push('/home');
+      }else{
+        alert("登录失败");
+      }
     },
   },
 };
@@ -89,12 +98,12 @@ export default {
   margin-left: 100px;
   margin-bottom: 20px;
 }
-.rememberMe{
-    margin-left: 100px;
+.rememberMe {
+  margin-left: 100px;
 }
-.loginBtn{
-    width: 77%;
-    margin-top: 15px;
-    margin-left: 97px;
+.loginBtn {
+  width: 77%;
+  margin-top: 15px;
+  margin-left: 97px;
 }
 </style>

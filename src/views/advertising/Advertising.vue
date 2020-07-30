@@ -42,7 +42,7 @@
           </div>
           <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+            <el-button type="primary" @click="addAppSend">确 定</el-button>
           </span>
         </el-dialog>
       </p>
@@ -240,7 +240,11 @@
               <span>广告源名称</span>
               <input type="text" />
             </p>
-            <p v-show="showPrise" v-for="(valueObject,key) in adsourceTemplate.data.adsource_data.placement_template" :key="key">
+            <p
+              v-show="showPrise"
+              v-for="(valueObject,key) in adsourceTemplate.data.adsource_data.placement_template"
+              :key="key"
+            >
               <span style="color:red">*</span>
               <span>{{valueObject.label}}</span>
               <input type="text" />
@@ -248,9 +252,12 @@
           </div>
           <div class="addAdverbotm" v-show="showRentPrise">
             <p class>报表 API</p>
-            <p v-for="(valueObject,key) in adsourceTemplate.data.adsource_data.account_template" :key="key">
+            <p
+              v-for="(valueObject,key) in adsourceTemplate.data.adsource_data.account_template"
+              :key="key"
+            >
               <span>{{valueObject.label}}</span>
-              <input type="text" :value="valueObject.value"/>
+              <input type="text" :value="valueObject.value" />
             </p>
           </div>
           <span slot="footer" class="dialog-footer">
@@ -356,14 +363,14 @@
 <script>
 const Template = ["标准原生", "原生横幅", "Draw信息流"];
 //引入封装好的接口层Ajax函数
-import {getAppList,} from "@/api/appAdver"
+import { getAppList, addApp } from "@/api/appAdver";
 export default {
   data() {
     return {
-      appEcho: '',//添加应用---应用名称
-      optionName:'',//添加应用----平台
-      shopUrl:'',//应用商店url
-      packageName:"",//包名
+      appEcho: "", //添加应用---应用名称
+      optionName: "", //添加应用----平台
+      shopUrl: "", //应用商店url
+      packageName: "", //包名
       checkboxGroup1: ["标准原生"],
       Template: Template,
       dialogVisible: false,
@@ -375,7 +382,7 @@ export default {
       dialogFormVisible: false,
       dialogTableVisible: false,
       changeBlue: 0,
-      addAppLength:0,//头部应用数量
+      addAppLength: 0, //头部应用数量
       value: "100", //开关
       advertisingTypeEnum: [
         "激励视频",
@@ -446,8 +453,8 @@ export default {
       num: 1,
       appData: {},
       isAdd: false,
-      
-      select:"",
+
+      select: "",
       newAdsourceList: {
         code: 200,
         data: {
@@ -501,13 +508,12 @@ export default {
           },
         },
       },
-      showPrise:false,
-			showRentPrise:false,
+      showPrise: false,
+      showRentPrise: false,
     };
   },
   created: function () {
-    this.appListData()
-    // this.appData = this.navLists[0];
+    this.appListData();
   },
   methods: {
     open() {
@@ -590,24 +596,24 @@ export default {
       //this.adsourceTemplate = 数据;
     },
     // 获取app列表数据
-    async appListData(){
-     let {data}= await getAppList({})
-     this.addAppLength=data.length
-     this.navLists=data
-    //  console.log(this.navLists)
+    async appListData() {
+      let { data } = await getAppList({});
+      this.addAppLength = data.length;
+      this.navLists = data;
+      this.appData = data[0];
     },
 
     //添加应用
-    //  async addAppSend(){
-    //    this.dialogVisible = false
-    //    let {data}= await addApp({
-    //         "appname": this.appEcho,
-    //         "os": this.optionName,
-    //         "pic_url": this.shopUrl,
-    //         "package_name": this.packageName
-    //     })
-    //     console.log(data)
-    //  }
+    async addAppSend() {
+      this.dialogVisible = false;
+      let { data } = await addApp({
+        appname: this.appEcho,
+        os: this.optionName,
+        pic_url: this.shopUrl,
+        package_name: this.packageName,
+      });
+      console.log(data);
+    },
   },
 };
 </script>

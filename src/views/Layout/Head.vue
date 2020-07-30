@@ -7,7 +7,7 @@
       </span>
     </div>
     <div class="headRight">
-      <span>qq账号</span>
+      <span>{{email}}</span>
       <span>
         <el-dropdown>
           <span class="el-dropdown-link">
@@ -25,7 +25,11 @@
 </template>
 
 <script>
-export default {};
+export default {
+  props:{
+    email:{}
+  }
+};
 </script>
 
 <style scoped>
