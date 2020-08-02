@@ -125,15 +125,18 @@
 
       <!-- 右边主要信息 -->
       <div class="right-main">
-        <el-table :data="advertiesingDatas.data.adseat_list" style="width: 100%">
+        <el-table
+          :data="adDatas.data"
+          style="width: 100%"
+          :row-key="getRowKeys"
+          @row-click="rowClick"
+          :expand-row-keys="expands"
+          @expand-change="expandChange"
+        >
           <!-- 广告源表格 -->
           <el-table-column type="expand">
-            <el-table
-              :data="advertiesingChildDatas.data.adsource_placement_data"
-              border
-              style="width: 100%"
-            >
-              <el-table-column prop="adsource_cn_name" label="广告网络" width="200"></el-table-column>
+            <el-table :data="advertiesingChildDatas" border style="width: 100%">
+              <el-table-column prop="adsource_name" label="广告网络" width="200"></el-table-column>
               <el-table-column prop="instance_name" label="广告源名称" width="380"></el-table-column>
               <el-table-column prop="placement" label="广告位信息" width="380">
                 <template slot-scope="scope">
@@ -193,9 +196,9 @@
             </template>
           </el-table-column>
           <el-table-column label="广告缓存数" prop="cache_num" width="180"></el-table-column>
-          <el-table-column label="第三方广告源" prop="adsource_placement_num" width="180">
+          <el-table-column label="第三方广告源" prop="adsource_num" width="180">
             <template slot-scope="scope">
-              <p>{{scope.row.adsource_placement_num}}个</p>
+              <p>{{scope.row.adsource_num}}个</p>
             </template>
           </el-table-column>
           <el-table-column label="操作">
@@ -363,7 +366,7 @@
 <script>
 const Template = ["标准原生", "原生横幅", "Draw信息流"];
 //引入封装好的接口层Ajax函数
-import { getAppList, addApp } from "@/api/appAdver";
+import { getAppList, addApp, adTypeList, adList } from "@/api/appAdver";
 export default {
   data() {
     return {
@@ -384,64 +387,9 @@ export default {
       changeBlue: 0,
       addAppLength: 0, //头部应用数量
       value: "100", //开关
-      advertisingTypeEnum: [
-        "激励视频",
-        "插屏",
-        "横幅",
-        "原生",
-        "开屏",
-        "积分墙",
-      ],
-      advertiesingDatas: {
-        code: 200,
-        data: {
-          adseat_list: [
-            {
-              id: "6683",
-              seat_name: "开屏广告",
-              aduuid: "A4B50FD1D3F3F9679FCF2392D6ABE72C",
-              ad_type: "1",
-              cache_num: "1",
-              ad_type_template: "1",
-              adsource_placement_num: "2",
-            },
-          ],
-        },
-      },
-      advertiesingChildDatas: {
-        code: 200,
-        data: {
-          adsource_placement_data: [
-            {
-              adsource_placement_id: "8692",
-              adsource_id: "16",
-              placement: [
-                { label: "Media ID", value: "1110635914" },
-                { label: "Unit ID", value: "5051817788834202" },
-              ],
-              is_pass: 0,
-              instance_name: "Tencent_Ads_native_1",
-              is_on: 0,
-              adsource_name: "Tencent Ads",
-              adsource_cn_name: "腾讯广告",
-            },
-            {
-              adsource_placement_id: "8678",
-              adsource_id: "17",
-              placement: [
-                { label: "App ID", value: "5077728" },
-                { label: "Slot ID", value: "945272045" },
-              ],
-              is_pass: 1,
-              instance_name: "Draw视频广告",
-              is_on: 1,
-              adsource_name: "Pangle(cn)",
-              adsource_cn_name: "穿山甲(国内)",
-            },
-          ],
-          company_id: "186",
-        },
-      },
+      advertisingTypeEnum: [],
+      adDatas: {},
+      advertiesingChildDatas: [],
       navLists: [],
       form: {
         name: "",
@@ -510,10 +458,12 @@ export default {
       },
       showPrise: false,
       showRentPrise: false,
+      expands: [],
     };
   },
   created: function () {
     this.appListData();
+    this.adListData();
   },
   methods: {
     open() {
@@ -554,14 +504,27 @@ export default {
           });
         });
     },
-    clickNews(item, index) {
+    async clickNews(item, index) {
       this.changeBlue = index;
       this.appData = item;
       // console.log(this.appData.app_name)
       // console.log(item,index)
       //拿到item.id调用后台请求查询
-      // this.advertiesingDatas = 请求后的数据
-      // console.log(this.advertiesingDatas)
+      this.adDatas = await adList({});
+    },
+    // 获取广告列表数据
+    async adListData() {
+      this.adDatas = await adList({});
+    },
+    getRowKeys(row) {
+      return row._id;
+    },
+    expandChange(row) {
+      this.advertiesingChildDatas = row.source;
+    },
+    rowClick(row, event, column) {
+      //点击列展开行
+      this.expandChange(row, column);
     },
     openDialog(item) {
       if (item == null) {
@@ -572,7 +535,12 @@ export default {
       }
       this.dialogVisible = true;
     },
-    openAdvertisingSpaceDialog(id) {
+    async openAdvertisingSpaceDialog(id) {
+      let typeList = await adTypeList({});
+      if (typeList.code === 200) {
+        this.advertisingTypeEnum = typeList.data;
+      }
+      console.log(this.advertisingTypeEnum);
       if (id == null) {
         this.isAdd = true;
       } else {

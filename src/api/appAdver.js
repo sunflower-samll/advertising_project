@@ -10,3 +10,13 @@ export function getAppList(params) {
 export function addApp(params) {
    return req.post("/user/app/add", params)
 }
+
+//获取广告类型列表
+export function adTypeList() {
+   return req.get("/user/ad/typelist")
+}
+
+//获取广告列表
+export function adList() {
+   return req.get("/user/ad/list")
+}
