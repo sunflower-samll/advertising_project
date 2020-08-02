@@ -3,11 +3,17 @@
     <div class="headLift">
       <span>公司logo</span>
       <span>
-        <i class="el-icon-s-unfold" style="margin-right:5px;"></i>首页
+        <i class="el-icon-s-unfold" style="margin-right:5px;"></i>
       </span>
     </div>
+    <div class="breadcrumb">
+      <el-breadcrumb separator="/">
+        <el-breadcrumb-item v-for="v in breadArr" :key="v.title" :to="{ path: v.path }">{{v.title}}</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
     <div class="headRight">
-      <span>{{email}}</span>
+      <i class="el-icon-s-custom"></i>
+      <span>email</span>
       <span>
         <el-dropdown>
           <span class="el-dropdown-link">
@@ -26,9 +32,38 @@
 
 <script>
 export default {
-  props:{
-    email:{}
-  }
+  data() {
+    return {
+      breadArr:[]//面包屑数组
+    };
+  },
+  methods: {
+    //面包屑
+    calcBread() {
+      // console.log("计算面包屑");
+      // console.log(this.$route);
+      let arr = [];
+      console.log(arr);
+      this.$route.matched.forEach(v=>{
+        if(v.meta&&v.meta.title){
+          arr.push({
+            title:v.meta.title,
+            path:v.path
+          })
+        }
+      })
+      console.log("计算出来的数组",arr)
+      this.breadArr=arr
+    },
+  },
+  created() {
+    this.calcBread();
+  },
+  watch: {
+    "$route.path"() {
+      this.calcBread(); //切换导航  地址栏发生变化 计算
+    },
+  },
 };
 </script>
 
@@ -74,5 +109,10 @@ export default {
   color: #333;
   text-align: center;
   line-height: 160px;
+}
+.breadcrumb {
+  /* margin-left: -1530px; */
+  height: 40px;
+  padding-top: 18px;
 }
 </style>

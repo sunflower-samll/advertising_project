@@ -25,15 +25,13 @@
       <p class="rememberMe">
         <el-checkbox v-model="checked">记住我</el-checkbox>
       </p>
-      <el-button type="primary" class="loginBtn" @click="login">登录</el-button>
+      <el-button type="primary" :plain="true" class="loginBtn" @click="login">登录</el-button>
     </div>
-    <children :email="dynamicValidateForm.email"></children>
   </div>
 </template>
 
 <script>
 import { checkLogin } from "@/api/account";
-import children from "./Layout/Head"
 export default {
   data() {
     return {
@@ -49,9 +47,6 @@ export default {
       password: "",
     };
   },
-  components:{
-    children,
-  },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -64,16 +59,20 @@ export default {
       });
     },
     async login() {
-      let data = await checkLogin(
-        {
-          "email": this.dynamicValidateForm.email,
-          "password": this.password,
-        }
-      );
-      if(data.data === 'success'){
-        this.$router.push('/home');
-      }else{
-        alert("登录失败");
+      let data = await checkLogin({
+        email: this.dynamicValidateForm.email,
+        password: this.password,
+      });
+      if (data.data === "success") {
+        let cookie = document.cookie.split(';');
+        console.log(cookie)
+        this.$message({
+          message: '登录成功',
+          type: 'success'
+        });
+        this.$router.push("/home");
+      } else {
+          this.$message.error('登录失败');
       }
     },
   },
