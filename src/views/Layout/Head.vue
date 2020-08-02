@@ -79,12 +79,14 @@ export default {
 }
 .headLift {
   margin-left: 30px;
+  width: 10%;
 }
 .headLift > span {
   margin-right: 40px;
 }
 .headRight {
   margin-right: 10px;
+  width: 10%;
 }
 .headRight > span {
   margin-right: 40px;
@@ -111,8 +113,11 @@ export default {
   line-height: 160px;
 }
 .breadcrumb {
-  /* margin-left: -1530px; */
+  margin-left: -40px;
+  width: 80%;
   height: 40px;
   padding-top: 18px;
+  text-align: left;
 }
+
 </style>
