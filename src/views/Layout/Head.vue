@@ -67,7 +67,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .head {
   height: 6%;
   width: 100%;
@@ -119,5 +119,16 @@ export default {
   padding-top: 18px;
   text-align: left;
 }
+.breadcrumb{
+  /deep/ .el-radio-button__inner{
+    color: #fff;
+  }
+  /deep/ .el-breadcrumb__inner.is-link, 
+  /deep/ .el-breadcrumb__inner a,
+  /deep/ .el-breadcrumb__item:last-child .el-breadcrumb__inner{
+    color: #fff;
+  }
+}
+
 
 </style>
